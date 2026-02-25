@@ -1,0 +1,21 @@
+# dependencies
+node_modules/
+
+# next build/dev artifacts
+.next/
+out/
+
+# local env
+.env
+.env.local
+.env.*.local
+
+# logs
+*.log
+dev-server.out.log
+dev-server.err.log
+
+# OS/editor
+.DS_Store
+Thumbs.db
+.vscode/

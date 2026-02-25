@@ -1,0 +1,3 @@
+name,category,aspName,destinationUrl,referenceUrl,targetPersona,angles,prLabelRequired,ngWords,status
+回線比較案件,internet,A8,https://example.com/hikari,,在宅勤務,料金|速度|工事費,true,絶対|No.1,active
+サーバー比較案件,server,VC,https://example.com/server,https://asp.example.com/server,初心者,月額|サポート|移行性,true,最強,active

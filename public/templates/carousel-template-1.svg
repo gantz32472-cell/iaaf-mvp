@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1080" height="1080" viewBox="0 0 1080 1080">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#12322c"/>
+      <stop offset="100%" stop-color="#2f7c6d"/>
+    </linearGradient>
+  </defs>
+  <rect width="1080" height="1080" fill="url(#bg)"/>
+  <rect x="60" y="60" width="960" height="960" rx="32" fill="#f2f7f6" opacity="0.95"/>
+  <text x="110" y="220" fill="#12322c" font-size="72" font-family="sans-serif" font-weight="700">IAAF Template</text>
+  <text x="110" y="320" fill="#1f574d" font-size="42" font-family="sans-serif">カルーセル簡易テンプレート</text>
+</svg>

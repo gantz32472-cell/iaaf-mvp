@@ -1,0 +1,51 @@
+{
+  "offers": [
+    {
+      "id": "85ec6282-bcb4-4293-b67d-aecd0cd8c928",
+      "status": "active",
+      "createdAt": "2026-02-25T07:28:12.642Z",
+      "updatedAt": "2026-02-25T07:28:12.642Z",
+      "name": "WiFi比較",
+      "category": "internet",
+      "aspName": "A8",
+      "destinationUrl": "https://example.com",
+      "angles": [
+        "料金"
+      ],
+      "prLabelRequired": true,
+      "ngWords": []
+    }
+  ],
+  "generatedPosts": [
+    {
+      "id": "d9e8de29-76db-453a-9efc-dc9f0b7e5e32",
+      "status": "draft",
+      "createdAt": "2026-02-25T07:28:12.656Z",
+      "updatedAt": "2026-02-25T07:28:12.656Z",
+      "scheduledAt": null,
+      "postedAt": null,
+      "instagramMediaId": null,
+      "errorMessage": null,
+      "offerIds": [
+        "85ec6282-bcb4-4293-b67d-aecd0cd8c928"
+      ],
+      "category": "internet",
+      "format": "carousel",
+      "hookText": "失敗しないinternet比較 3分でわかる",
+      "scriptText": "internet比較の台本です。導入→比較軸→おすすめパターン→CTA",
+      "captionText": "internetを比較する時は、料金だけでなく条件差も確認。DMで「比較」と送ってください。",
+      "hashtags": [
+        "#比較",
+        "#インスタ運用",
+        "#アフィリエイト"
+      ],
+      "ctaKeyword": "比較",
+      "prNotationText": "PR"
+    }
+  ],
+  "dmRules": [],
+  "dmConversations": [],
+  "clickEvents": [],
+  "conversionReports": [],
+  "shortLinks": []
+}

@@ -1,0 +1,149 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum OfferCategory {
+  internet
+  server
+  other
+}
+
+enum OfferStatus {
+  active
+  paused
+  ended
+}
+
+enum PostFormat {
+  carousel
+  reel
+}
+
+enum GeneratedPostStatus {
+  draft
+  scheduled
+  posted
+  failed
+}
+
+enum DmMatchType {
+  partial
+  exact
+}
+
+enum ConversionSource {
+  manual
+  csv
+}
+
+model Offer {
+  id              String      @id @default(uuid())
+  name            String
+  category        OfferCategory
+  aspName         String
+  destinationUrl  String
+  referenceUrl    String?
+  targetPersona   String?
+  angles          Json
+  prLabelRequired Boolean
+  ngWords         Json
+  status          OfferStatus @default(active)
+  createdAt       DateTime    @default(now())
+  updatedAt       DateTime    @updatedAt
+
+  conversionReports ConversionReport[]
+}
+
+model GeneratedPost {
+  id               String              @id @default(uuid())
+  offerIds         Json
+  category         String
+  format           PostFormat
+  hookText         String
+  scriptText       String
+  captionText      String
+  hashtags         Json
+  ctaKeyword       String
+  prNotationText   String?
+  mediaAssetPath   String?
+  status           GeneratedPostStatus @default(draft)
+  scheduledAt      DateTime?
+  postedAt         DateTime?
+  instagramMediaId String?
+  errorMessage     String?
+  createdAt        DateTime            @default(now())
+  updatedAt        DateTime            @updatedAt
+}
+
+model DmRule {
+  id                     String      @id @default(uuid())
+  keyword                String
+  matchType              DmMatchType
+  reply1                 String
+  reply2                 String?
+  delayMinutesForReply2  Int?
+  targetUrl              String
+  cooldownHours          Int         @default(24)
+  isActive               Boolean     @default(true)
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
+
+  dmConversations        DmConversation[]
+}
+
+model DmConversation {
+  id                  String   @id @default(uuid())
+  instagramUserIdHash String
+  messageText         String
+  matchedKeyword      String?
+  ruleId              String?
+  replied             Boolean  @default(false)
+  generatedPostId     String?
+  createdAt           DateTime @default(now())
+
+  rule DmRule? @relation(fields: [ruleId], references: [id], onDelete: SetNull)
+}
+
+model ClickEvent {
+  id              String   @id @default(uuid())
+  shortCode       String
+  generatedPostId String?
+  offerId         String?
+  keyword         String?
+  utmSource       String?
+  utmCampaign     String?
+  userAgent       String?
+  ipHash          String?
+  clickedAt       DateTime @default(now())
+}
+
+model ShortLink {
+  shortCode       String   @id
+  targetUrl       String
+  generatedPostId String?
+  offerId         String?
+  keyword         String?
+  utmSource       String?
+  utmMedium       String?
+  utmCampaign     String?
+  createdAt       DateTime @default(now())
+}
+
+model ConversionReport {
+  id            String           @id @default(uuid())
+  date          DateTime
+  offerId       String
+  cvCount       Int
+  approvedCount Int
+  revenueAmount Int
+  source        ConversionSource
+  createdAt     DateTime         @default(now())
+  updatedAt     DateTime         @updatedAt
+
+  offer Offer @relation(fields: [offerId], references: [id], onDelete: Cascade)
+}
