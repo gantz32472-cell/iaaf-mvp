@@ -4,6 +4,8 @@ import { JsonFormAction } from "@/components/client-actions";
 import { PageShell } from "@/components/page-shell";
 import { getAnalyticsByKeywords, getAnalyticsByPosts } from "@/server/modules/analytics/service";
 
+export const dynamic = "force-dynamic";
+
 export default async function AnalyticsPage({
   searchParams
 }: {

@@ -3,6 +3,8 @@ import { JsonFormAction } from "@/components/client-actions";
 import { PageShell } from "@/components/page-shell";
 import { listOffers } from "@/server/modules/offers/service";
 
+export const dynamic = "force-dynamic";
+
 export default async function OffersPage() {
   const offers = await listOffers();
   return (

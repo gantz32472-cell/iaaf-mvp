@@ -2,6 +2,8 @@ import { PageShell } from "@/components/page-shell";
 import { Card } from "@/components/card";
 import { getAnalyticsSummary } from "@/server/modules/analytics/service";
 
+export const dynamic = "force-dynamic";
+
 export default async function DashboardPage() {
   const summary = await getAnalyticsSummary();
   const stats: Array<[string, number]> = [

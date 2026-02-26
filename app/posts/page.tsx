@@ -3,6 +3,8 @@ import { JsonFormAction, PostActionButton } from "@/components/client-actions";
 import { PageShell } from "@/components/page-shell";
 import { listPosts } from "@/server/modules/posts/service";
 
+export const dynamic = "force-dynamic";
+
 export default async function PostsPage() {
   const posts = await listPosts();
   const firstId = posts[0]?.id ?? "00000000-0000-0000-0000-000000000000";

@@ -3,6 +3,8 @@ import { JsonFormAction } from "@/components/client-actions";
 import { PageShell } from "@/components/page-shell";
 import { listDmRules } from "@/server/modules/dm-rules/service";
 
+export const dynamic = "force-dynamic";
+
 export default async function DmRulesPage() {
   const rules = await listDmRules();
   return (
