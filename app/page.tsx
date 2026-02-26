@@ -4,12 +4,12 @@ import { getAnalyticsSummary } from "@/server/modules/analytics/service";
 
 export default async function DashboardPage() {
   const summary = await getAnalyticsSummary();
-  const stats = [
-    ["今日の投稿数", summary.todayPosts],
-    ["DM件数", summary.todayDms],
-    ["クリック数", summary.todayClicks],
-    ["推定CV数", summary.estimatedCv],
-    ["エラー件数", summary.errorCount]
+  const stats: Array<[string, number]> = [
+    ["莉頑律縺ｮ謚慕ｨｿ謨ｰ", summary.todayPosts],
+    ["DM莉ｶ謨ｰ", summary.todayDms],
+    ["繧ｯ繝ｪ繝・け謨ｰ", summary.todayClicks],
+    ["謗ｨ螳咾V謨ｰ", summary.estimatedCv],
+    ["繧ｨ繝ｩ繝ｼ莉ｶ謨ｰ", summary.errorCount]
   ];
   return (
     <PageShell title="Dashboard">
@@ -21,7 +21,7 @@ export default async function DashboardPage() {
         ))}
       </div>
       <div className="mt-6 grid gap-4">
-        <Card title="投稿別ランキング（簡易）">
+        <Card title="謚慕ｨｿ蛻･繝ｩ繝ｳ繧ｭ繝ｳ繧ｰ・育ｰ｡譏難ｼ・>
           <table>
             <thead>
               <tr>
@@ -43,8 +43,7 @@ export default async function DashboardPage() {
               {summary.ranking.length === 0 && (
                 <tr>
                   <td colSpan={4} className="text-slate-500">
-                    データなし
-                  </td>
+                    繝・・繧ｿ縺ｪ縺・                  </td>
                 </tr>
               )}
             </tbody>
