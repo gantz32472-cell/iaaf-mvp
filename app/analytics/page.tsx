@@ -17,6 +17,7 @@ export default async function AnalyticsPage({
     getAnalyticsByPosts({ period }),
     getAnalyticsByKeywords({ period })
   ]);
+
   return (
     <PageShell title="分析">
       <div className="mb-4 flex items-center gap-2">
@@ -31,6 +32,7 @@ export default async function AnalyticsPage({
           </Link>
         ))}
       </div>
+
       <div className="grid gap-4 xl:grid-cols-2">
         <Card title="投稿別 DM / クリック集計">
           <table>
@@ -54,6 +56,7 @@ export default async function AnalyticsPage({
             </tbody>
           </table>
         </Card>
+
         <Card title="キーワード別集計">
           <table>
             <thead>
@@ -75,6 +78,7 @@ export default async function AnalyticsPage({
           </table>
         </Card>
       </div>
+
       <div className="mt-4">
         <Card title="CV CSV取込">
           <JsonFormAction

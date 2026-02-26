@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function DmRulesPage() {
   const rules = await listDmRules();
+
   return (
     <PageShell title="DMルール管理">
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
@@ -32,6 +33,7 @@ export default async function DmRulesPage() {
             </tbody>
           </table>
         </Card>
+
         <div className="space-y-4">
           <Card title="ルール作成">
             <JsonFormAction
@@ -41,7 +43,7 @@ export default async function DmRulesPage() {
                 {
                   keyword: "比較",
                   matchType: "partial",
-                  reply1: "比較ページはこちらです",
+                  reply1: "比較表はこちらです。必要なら条件別でも出せます。",
                   targetUrl: "https://example.com/compare",
                   cooldownHours: 24,
                   isActive: true
@@ -51,6 +53,7 @@ export default async function DmRulesPage() {
               )}
             />
           </Card>
+
           <Card title="テストマッチ">
             <JsonFormAction
               title="POST /api/dm-rules/test-match"
@@ -58,6 +61,7 @@ export default async function DmRulesPage() {
               initialJson={JSON.stringify({ messageText: "wifi 比較ください" }, null, 2)}
             />
           </Card>
+
           <Card title="Mock Webhook テスト">
             <JsonFormAction
               title="POST /api/webhooks/instagram/messages"

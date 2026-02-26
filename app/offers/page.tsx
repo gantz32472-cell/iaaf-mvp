@@ -7,6 +7,7 @@ export const dynamic = "force-dynamic";
 
 export default async function OffersPage() {
   const offers = await listOffers();
+
   return (
     <PageShell title="案件マスタ">
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
@@ -34,6 +35,7 @@ export default async function OffersPage() {
             </tbody>
           </table>
         </Card>
+
         <div className="space-y-4">
           <Card title="新規作成">
             <JsonFormAction
@@ -45,15 +47,19 @@ export default async function OffersPage() {
                   category: "internet",
                   aspName: "A8",
                   destinationUrl: "https://example.com/wifi",
-                  angles: ["料金", "速度", "工事不要"],
+                  referenceUrl: "https://example.com/wifi-ref",
+                  targetPersona: "料金を見直したい人",
+                  angles: ["料金", "速度", "比較"],
                   prLabelRequired: true,
-                  ngWords: ["絶対", "最強"]
+                  ngWords: ["No.1", "絶対"],
+                  status: "active"
                 },
                 null,
                 2
               )}
             />
           </Card>
+
           <Card title="CSV取込">
             <JsonFormAction
               title="POST /api/offers/import-csv"
@@ -62,7 +68,7 @@ export default async function OffersPage() {
                 {
                   csvText:
                     "name,category,aspName,destinationUrl,referenceUrl,targetPersona,angles,prLabelRequired,ngWords,status\n" +
-                    "サンプル回線,internet,A8,https://example.com/hikari,,在宅ワーカー,料金|速度,true,絶対|No.1,active"
+                    "サンプル光回線,internet,A8,https://example.com/hikari,,在宅ワーカー,料金|速度|比較,true,No.1|絶対,active"
                 },
                 null,
                 2

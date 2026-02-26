@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function ContentPage() {
   const offers = await listOffers();
   const firstOfferId = offers[0]?.id ?? "00000000-0000-0000-0000-000000000000";
+
   return (
     <PageShell title="コンテンツ生成">
       <div className="grid gap-4 xl:grid-cols-2">
@@ -29,6 +30,7 @@ export default async function ContentPage() {
             )}
           />
         </Card>
+
         <div className="space-y-4">
           <Card title="NGチェック">
             <JsonFormAction
@@ -47,6 +49,7 @@ export default async function ContentPage() {
               )}
             />
           </Card>
+
           <Card title="カルーセル画像生成（簡易SVG）">
             <JsonFormAction
               title="POST /api/content/render-carousel"
@@ -55,7 +58,7 @@ export default async function ContentPage() {
                 {
                   pages: [
                     { title: "回線比較の結論", body: "料金だけでなく工事有無と速度を確認" },
-                    { title: "CTA", body: "DMで『比較』と送信" }
+                    { title: "CTA", body: "DMで『比較』と送ると一覧リンクを返します" }
                   ]
                 },
                 null,

@@ -8,6 +8,7 @@ export const dynamic = "force-dynamic";
 export default async function PostsPage() {
   const posts = await listPosts();
   const firstId = posts[0]?.id ?? "00000000-0000-0000-0000-000000000000";
+
   return (
     <PageShell title="投稿管理">
       <div className="grid gap-4 xl:grid-cols-[1.5fr_1fr]">
@@ -39,6 +40,7 @@ export default async function PostsPage() {
             </tbody>
           </table>
         </Card>
+
         <Card title="予約登録">
           <JsonFormAction
             title="POST /api/posts/schedule"
