@@ -113,7 +113,9 @@ export async function importConversionReportsCsv(csvText: string) {
     }
   }
   if (created.length) {
-    await saveDb((state) => state.conversionReports.push(...created));
+    await saveDb((state) => {
+      state.conversionReports.push(...created);
+    });
   }
   return { importedCount: created.length, errors, items: created };
 }
