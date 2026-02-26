@@ -41,7 +41,9 @@ export async function saveGeneratedPostDraft(input: {
     errorMessage: null,
     ...input
   };
-  await saveDb((db) => db.generatedPosts.push(post));
+  await saveDb((db) => {
+    db.generatedPosts.push(post);
+  });
   return post;
 }
 
