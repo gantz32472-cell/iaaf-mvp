@@ -1,0 +1,49 @@
+services:
+  - type: web
+    name: iaaf-mvp
+    env: node
+    autoDeploy: true
+    buildCommand: npm ci && npm run prisma:generate && npm run build
+    startCommand: npm run start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: 22
+      - key: ENABLE_MOCK_MODE
+        value: "true"
+      - key: APP_BASE_URL
+        sync: false
+      - key: NEXT_PUBLIC_APP_NAME
+        value: IAAF
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: ENABLE_REAL_INSTAGRAM_PUBLISH
+        value: "false"
+      - key: ENABLE_REAL_INSTAGRAM_DM
+        value: "false"
+      - key: META_APP_ID
+        sync: false
+      - key: META_APP_SECRET
+        sync: false
+      - key: META_IG_USER_ID
+        sync: false
+      - key: META_PAGE_ACCESS_TOKEN
+        sync: false
+      - key: META_VERIFY_TOKEN
+        sync: false
+      - key: ENABLE_AUTH
+        value: "false"
+      - key: ADMIN_USERNAME
+        value: admin
+      - key: ADMIN_PASSWORD
+        sync: false
+      - key: SESSION_SECRET
+        generateValue: true
+      - key: DATABASE_URL
+        sync: false
+
+# Optional production database (uncomment when you switch to Prisma runtime)
+# databases:
+#   - name: iaaf-postgres
+#     databaseName: iaaf
+#     user: iaaf

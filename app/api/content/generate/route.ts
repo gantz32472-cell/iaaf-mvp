@@ -4,7 +4,14 @@ import { generateContentDraft, saveGeneratedPostDraft } from "@/server/modules/c
 
 export const POST = withApiErrorHandling(async (request: Request) => {
   const body = await parseJson(request, contentGenerateInputSchema);
-  const generated = await generateContentDraft(body);
+  const generated = await generateContentDraft({
+    category: body.category,
+    targetPersona: body.targetPersona ?? null,
+    angles: body.angles ?? [],
+    offerIds: body.offerIds,
+    format: body.format,
+    objective: body.objective
+  });
   const draft = await saveGeneratedPostDraft({
     offerIds: body.offerIds,
     category: body.category,
