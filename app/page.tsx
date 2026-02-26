@@ -1,15 +1,15 @@
-﻿import { PageShell } from "@/components/page-shell";
+import { PageShell } from "@/components/page-shell";
 import { Card } from "@/components/card";
 import { getAnalyticsSummary } from "@/server/modules/analytics/service";
 
 export default async function DashboardPage() {
   const summary = await getAnalyticsSummary();
   const stats: Array<[string, number]> = [
-    ["Today Posts", summary.todayPosts],
-    ["DM Count", summary.todayDms],
-    ["Clicks", summary.todayClicks],
-    ["Estimated CV", summary.estimatedCv],
-    ["Errors", summary.errorCount]
+    ["今日の投稿数", summary.todayPosts],
+    ["DM件数", summary.todayDms],
+    ["クリック数", summary.todayClicks],
+    ["推定CV数", summary.estimatedCv],
+    ["エラー件数", summary.errorCount]
   ];
 
   return (
@@ -23,7 +23,7 @@ export default async function DashboardPage() {
       </div>
 
       <div className="mt-6 grid gap-4">
-        <Card title="Post Ranking (Simple)">
+        <Card title="投稿別ランキング（簡易）">
           <table>
             <thead>
               <tr>
@@ -45,7 +45,7 @@ export default async function DashboardPage() {
               {summary.ranking.length === 0 && (
                 <tr>
                   <td colSpan={4} className="text-slate-500">
-                    No data
+                    データなし
                   </td>
                 </tr>
               )}
