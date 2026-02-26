@@ -43,6 +43,8 @@ export async function resolveRedirectAndTrack(input: {
     ipHash: input.ip ? hashText(input.ip) : null,
     clickedAt: nowIso()
   };
-  await saveDb((state) => state.clickEvents.push(clickEvent));
+  await saveDb((state) => {
+    state.clickEvents.push(clickEvent);
+  });
   return { targetUrl: url.toString(), clickEvent };
 }

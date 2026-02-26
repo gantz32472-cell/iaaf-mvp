@@ -16,7 +16,9 @@ export async function createDmRule(input: z.input<typeof dmRuleInputSchema>): Pr
   const parsed = dmRuleInputSchema.parse(input);
   const now = nowIso();
   const item: DmRule = { id: createId(), createdAt: now, updatedAt: now, ...parsed };
-  await saveDb((db) => db.dmRules.push(item));
+  await saveDb((db) => {
+    db.dmRules.push(item);
+  });
   return item;
 }
 
