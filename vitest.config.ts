@@ -3,7 +3,9 @@ import path from "node:path";
 
 export default defineConfig({
   test: {
-    environment: "node"
+    environment: "node",
+    maxWorkers: 1,
+    minWorkers: 1
   },
   resolve: {
     alias: {
