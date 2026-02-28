@@ -29,5 +29,20 @@ describe("content template optimizer", () => {
     expect(out.ctaKeyword).toBe("導入");
     expect(out.captionText).toContain("プロフィールリンク");
   });
-});
 
+  it("applies blog-specific copy and CTA keyword", async () => {
+    const out = await generatePostContent({
+      category: "blog",
+      targetPersona: "副業ブロガー",
+      angles: ["記事構成", "SEO"],
+      format: "carousel",
+      objective: "dm"
+    });
+
+    expect(out.ctaKeyword).toBe("添削");
+    expect(out.captionText).toContain("ブログ運営");
+    expect(out.captionText).toContain("構成・SEO・収益導線");
+    expect(out.hookCandidates[0]).toContain("見出し");
+    expect(out.hashtags).toContain("#ブログ運営");
+  });
+});

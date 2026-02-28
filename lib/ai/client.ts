@@ -16,6 +16,13 @@ type GenerateInput = {
   objective: "dm" | "click";
 };
 
+function getCategoryLabel(category: string) {
+  if (category === "internet") return "回線";
+  if (category === "server") return "サーバー";
+  if (category === "blog") return "ブログ運営";
+  return "サービス";
+}
+
 function normalizeTagWord(text: string) {
   return text.replace(/\s+/g, "").replace(/[!-/:-@[-`{-~]/g, "");
 }
@@ -29,13 +36,13 @@ function pickCtaKeyword(input: GenerateInput) {
   if (input.objective === "dm") {
     if (input.category === "internet") return "比較";
     if (input.category === "server") return "診断";
-    if (input.category === "blog") return "相談";
+    if (input.category === "blog") return "添削";
     return "相談";
   }
 
   if (input.category === "internet") return "詳細";
   if (input.category === "server") return "導入";
-  if (input.category === "blog") return "記事";
+  if (input.category === "blog") return "テンプレ";
   return "確認";
 }
 
@@ -66,33 +73,53 @@ function buildHashtags(input: GenerateInput) {
 }
 
 function buildCaption(input: GenerateInput, ctaKeyword: string) {
+  const categoryLabel = getCategoryLabel(input.category);
   const persona = input.targetPersona?.trim() ? input.targetPersona.trim() : "迷っている方";
   const angleLine = input.angles.length > 0 ? `特に「${input.angles.slice(0, 2).join(" / ")}」を重視して整理しました。` : "";
   const ctaLine =
     input.objective === "dm"
       ? `DMで「${ctaKeyword}」と送ってください。条件別の比較リンクを返します。`
       : `プロフィールリンクから「${ctaKeyword}」をチェックしてください。`;
-  return `${persona}向けに${input.category}の選び方を短くまとめました。${angleLine}${ctaLine}`;
+  if (input.category === "blog") {
+    const guidanceLine =
+      input.objective === "dm"
+        ? "構成・SEO・収益導線の3点で改善ポイントをまとめています。"
+        : "検索意図に沿った構成テンプレを使うと、改善サイクルが早くなります。";
+    return `${persona}向けに${categoryLabel}の改善ポイントを短くまとめました。${guidanceLine}${angleLine}${ctaLine}`;
+  }
+  return `${persona}向けに${categoryLabel}の選び方を短くまとめました。${angleLine}${ctaLine}`;
 }
 
 function buildMockGeneratedContent(input: GenerateInput) {
   const ctaKeyword = pickCtaKeyword(input);
   const hashtags = buildHashtags(input);
-
-  const hookCandidates = [
-    `${input.category}選びで失敗しない3つの基準`,
-    `${input.targetPersona ?? "初心者向け"}でも迷わない${input.category}比較`,
-    `${input.category}のコスパを最短で見抜くポイント`
-  ];
+  const categoryLabel = getCategoryLabel(input.category);
+  const hookCandidates =
+    input.category === "blog"
+      ? [
+          "読まれる記事は最初の見出しで9割決まる",
+          `${input.targetPersona ?? "初心者"}向けにブログ改善ポイントを3分で整理`,
+          "収益化が伸びる記事設計を3ステップで解説"
+        ]
+      : [
+          `${categoryLabel}選びで失敗しない3つの基準`,
+          `${input.targetPersona ?? "初心者向け"}でも迷わない${categoryLabel}比較`,
+          `${categoryLabel}のコスパを最短で見抜くポイント`
+        ];
+  const page1Body = input.category === "blog" ? "検索意図と導線を先に設計すると成果が安定しやすい" : `${categoryLabel}は条件の見える化で選ぶと失敗しにくい`;
+  const page2Body =
+    input.category === "blog"
+      ? (input.angles[0] ?? "構成・SEO・収益導線") + " を優先して改善"
+      : (input.angles[0] ?? "料金・速度・サポート") + " を最優先で確認";
 
   return generatedContentSchema.parse({
     hookCandidates,
     carouselPages: [
-      { title: "結論", body: `${input.category}は条件の見える化で選ぶと失敗しにくい` },
-      { title: "比較軸", body: (input.angles[0] ?? "料金・速度・サポート") + " を最優先で確認" },
+      { title: "結論", body: page1Body },
+      { title: "比較軸", body: page2Body },
       { title: "CTA", body: input.objective === "dm" ? `DMで「${ctaKeyword}」と送信` : "プロフィールリンクから詳細確認" }
     ],
-    scriptText: `${input.category}比較の台本: 結論 -> 比較軸 -> 失敗例 -> CTA`,
+    scriptText: `${categoryLabel}の台本: 結論 -> 比較軸 -> 失敗例 -> CTA`,
     captionText: buildCaption(input, ctaKeyword),
     hashtags,
     ctaKeyword,
