@@ -121,6 +121,9 @@
 ### `GET /api/analytics/keywords`
 - キーワード別 DM/クリック集計
 
+### `GET /api/analytics/offers`
+- 案件別 DM/クリック/CV/売上 集計
+
 ### `POST /api/analytics/conversions/import`
 - body: `{ "csvText": "date,offerId,cvCount,...\n..." }`
 - CSV取込（行番号付きエラー返却）
@@ -130,6 +133,8 @@
 ### `POST /api/jobs/publish-scheduled`
 - `scheduledAt <= now` の投稿を一括実行
 - cron / n8n からの定期実行を想定
+- `CRON_PUBLISH_SECRET` が設定されている場合は `?key=` か `x-cron-key` が必須
+- `OPS_ALERT_WEBHOOK_URL` が設定され、失敗/不正scheduledAtがある場合はWebhook通知
 
 ## Auth (v1-alpha, minimal)
 

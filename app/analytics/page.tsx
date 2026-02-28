@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Card } from "@/components/card";
 import { JsonFormAction } from "@/components/client-actions";
 import { PageShell } from "@/components/page-shell";
-import { getAnalyticsByKeywords, getAnalyticsByPosts } from "@/server/modules/analytics/service";
+import { getAnalyticsByKeywords, getAnalyticsByOffers, getAnalyticsByPosts } from "@/server/modules/analytics/service";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +13,10 @@ export default async function AnalyticsPage({
 }) {
   const params = (await searchParams) ?? {};
   const period = params.period ?? "week";
-  const [posts, keywords] = await Promise.all([
+  const [posts, keywords, offers] = await Promise.all([
     getAnalyticsByPosts({ period }),
-    getAnalyticsByKeywords({ period })
+    getAnalyticsByKeywords({ period }),
+    getAnalyticsByOffers({ period })
   ]);
 
   return (
@@ -72,6 +73,37 @@ export default async function AnalyticsPage({
                   <td>{row.keyword}</td>
                   <td>{row.dms}</td>
                   <td>{row.clicks}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </Card>
+      </div>
+
+      <div className="mt-4">
+        <Card title="案件別パフォーマンス（DM / Click / CV）">
+          <table>
+            <thead>
+              <tr>
+                <th>Offer</th>
+                <th>Category</th>
+                <th>DMs</th>
+                <th>Clicks</th>
+                <th>CV</th>
+                <th>Revenue</th>
+                <th>Top Keywords</th>
+              </tr>
+            </thead>
+            <tbody>
+              {offers.map((row) => (
+                <tr key={row.offerId}>
+                  <td>{row.offerName}</td>
+                  <td>{row.category}</td>
+                  <td>{row.dms}</td>
+                  <td>{row.clicks}</td>
+                  <td>{row.cvCount}</td>
+                  <td>{row.revenueAmount}</td>
+                  <td>{row.topKeywords.join(", ") || "-"}</td>
                 </tr>
               ))}
             </tbody>

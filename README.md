@@ -112,6 +112,24 @@ curl -X POST http://localhost:3000/api/webhooks/instagram/messages ^
 npm test
 ```
 
+## 自動運用（GitHub Actions 15分実行）
+1. 本番環境に設定
+- `CRON_PUBLISH_SECRET=<long-random-string>`
+- （任意）`OPS_ALERT_WEBHOOK_URL=<Slack/Discord等のWebhook URL>`
+
+2. GitHub Secrets に設定
+- `RENDER_PUBLISH_URL=https://<your-domain>/api/jobs/publish-scheduled?key=<CRON_PUBLISH_SECRET>`
+- （任意）`SLACK_WEBHOOK_URL=<your-slack-webhook-url>`
+
+3. ワークフロー有効化
+- `.github/workflows/publish-scheduled.yml`
+- schedule: `*/15 * * * *`
+- 手動確認: Actions から `Publish Scheduled Posts` を `Run workflow`
+
+4. 成功条件
+- レスポンスJSONの `success=true`
+- 失敗時は workflow が `failed` になり、`SLACK_WEBHOOK_URL` 設定時は通知送信
+
 実装済み:
 - DM rule キーワードマッチ
 - 短縮URLクリック計測

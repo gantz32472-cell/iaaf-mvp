@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { Card } from "@/components/card";
 import { JsonFormAction } from "@/components/client-actions";
 import { PageShell } from "@/components/page-shell";
@@ -20,6 +21,7 @@ export default async function OffersPage() {
                 <th>Status</th>
                 <th>ASP</th>
                 <th>Pause API</th>
+                <th>Next</th>
               </tr>
             </thead>
             <tbody>
@@ -30,6 +32,14 @@ export default async function OffersPage() {
                   <td>{o.status}</td>
                   <td>{o.aspName}</td>
                   <td className="font-mono text-xs">POST /api/offers/{o.id}/pause</td>
+                  <td>
+                    <Link
+                      href={`/content?offerId=${o.id}`}
+                      className="rounded-md bg-slate-100 px-2 py-1 text-xs text-slate-700 hover:bg-slate-200"
+                    >
+                      この案件で生成
+                    </Link>
+                  </td>
                 </tr>
               ))}
             </tbody>
@@ -80,4 +90,3 @@ export default async function OffersPage() {
     </PageShell>
   );
 }
-

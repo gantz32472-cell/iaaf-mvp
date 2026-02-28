@@ -45,6 +45,7 @@ Use a Render Cron Job to call scheduled publish endpoint regularly.
 
 1. Set web service env:
    - `CRON_PUBLISH_SECRET=<long-random-string>`
+   - optional: `OPS_ALERT_WEBHOOK_URL=<webhook-url>`
 2. In Render, create `Cron Job`
    - Schedule example: `*/15 * * * *` (every 15 minutes)
    - Command:
@@ -71,6 +72,7 @@ Render free plan does not support Jobs/Cron. Use GitHub Actions scheduler instea
 4. Notification:
    - If `SLACK_WEBHOOK_URL` is set, workflow failure sends Slack alert.
    - GitHub email notifications can also be enabled from user notification settings.
+   - App-side anomaly notification is available with `OPS_ALERT_WEBHOOK_URL`.
 
 ## Important limitations in mock mode
 

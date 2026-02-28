@@ -41,8 +41,36 @@ describe("content template optimizer", () => {
 
     expect(out.ctaKeyword).toBe("添削");
     expect(out.captionText).toContain("ブログ運営");
-    expect(out.captionText).toContain("構成・SEO・収益導線");
-    expect(out.hookCandidates[0]).toContain("見出し");
+    expect(out.captionText).toContain("改善ポイント");
+    expect(out.hookCandidates[0]).toContain("記事");
     expect(out.hashtags).toContain("#ブログ運営");
+  });
+
+  it("switches to SEO-oriented blog template when angles include SEO terms", async () => {
+    const out = await generatePostContent({
+      category: "blog",
+      targetPersona: "個人ブロガー",
+      angles: ["検索意図", "SEO"],
+      format: "carousel",
+      objective: "dm"
+    });
+
+    expect(out.captionText).toContain("検索意図");
+    expect(out.scriptText).toContain("SEO軸");
+    expect(out.carouselPages[0].body).toContain("検索意図");
+  });
+
+  it("switches to monetization-oriented template when angles include revenue terms", async () => {
+    const out = await generatePostContent({
+      category: "blog",
+      targetPersona: "収益化したい人",
+      angles: ["収益導線", "CTA設計"],
+      format: "carousel",
+      objective: "click"
+    });
+
+    expect(out.ctaKeyword).toBe("テンプレ");
+    expect(out.scriptText).toContain("収益導線軸");
+    expect(out.carouselPages[0].body).toContain("再現性");
   });
 });

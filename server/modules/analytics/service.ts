@@ -140,6 +140,78 @@ export async function getAnalyticsByKeywords(rangeInput?: RangeInput) {
   return [...counter.values()].sort((a, b) => b.clicks + b.dms - (a.clicks + a.dms));
 }
 
+export async function getAnalyticsByOffers(rangeInput?: RangeInput) {
+  const db = await getDb();
+  const range = getRange(rangeInput);
+  const postById = new Map(db.generatedPosts.map((post) => [post.id, post]));
+
+  const rows = db.offers.map((offer) => ({
+    offerId: offer.id,
+    offerName: offer.name,
+    category: offer.category,
+    status: offer.status,
+    clicks: 0,
+    dms: 0,
+    cvCount: 0,
+    approvedCount: 0,
+    revenueAmount: 0,
+    topKeywords: [] as string[]
+  }));
+  const rowByOfferId = new Map(rows.map((row) => [row.offerId, row]));
+  const keywordCounterByOfferId = new Map<string, Map<string, number>>();
+
+  const upsertKeyword = (offerId: string, keyword: string) => {
+    if (!keyword) return;
+    const key = keyword.trim();
+    if (!key) return;
+    const counter = keywordCounterByOfferId.get(offerId) ?? new Map<string, number>();
+    counter.set(key, (counter.get(key) ?? 0) + 1);
+    keywordCounterByOfferId.set(offerId, counter);
+  };
+
+  for (const click of db.clickEvents) {
+    if (!inRange(click.clickedAt, range)) continue;
+    if (!click.offerId) continue;
+    const row = rowByOfferId.get(click.offerId);
+    if (!row) continue;
+    row.clicks += 1;
+    if (click.keyword) upsertKeyword(click.offerId, click.keyword);
+  }
+
+  for (const dm of db.dmConversations) {
+    if (!inRange(dm.createdAt, range)) continue;
+    if (!dm.generatedPostId) continue;
+    const post = postById.get(dm.generatedPostId);
+    if (!post) continue;
+    for (const offerId of post.offerIds) {
+      const row = rowByOfferId.get(offerId);
+      if (!row) continue;
+      row.dms += 1;
+      if (dm.matchedKeyword) upsertKeyword(offerId, dm.matchedKeyword);
+    }
+  }
+
+  for (const cv of db.conversionReports) {
+    if (!inRange(`${cv.date}T00:00:00.000Z`, range)) continue;
+    const row = rowByOfferId.get(cv.offerId);
+    if (!row) continue;
+    row.cvCount += cv.cvCount;
+    row.approvedCount += cv.approvedCount;
+    row.revenueAmount += cv.revenueAmount;
+  }
+
+  for (const row of rows) {
+    const counter = keywordCounterByOfferId.get(row.offerId);
+    if (!counter) continue;
+    row.topKeywords = [...counter.entries()]
+      .sort((a, b) => b[1] - a[1])
+      .slice(0, 3)
+      .map(([keyword]) => keyword);
+  }
+
+  return rows.sort((a, b) => b.clicks + b.dms + b.revenueAmount - (a.clicks + a.dms + a.revenueAmount));
+}
+
 export async function importConversionReportsCsv(csvText: string) {
   const rows = parseCsv(csvText);
   const errors: Array<{ row: number; message: string }> = [];

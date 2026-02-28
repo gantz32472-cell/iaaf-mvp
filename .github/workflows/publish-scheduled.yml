@@ -5,9 +5,14 @@ on:
     - cron: "*/15 * * * *"
   workflow_dispatch:
 
+concurrency:
+  group: publish-scheduled
+  cancel-in-progress: false
+
 jobs:
   publish:
     runs-on: ubuntu-latest
+    timeout-minutes: 10
     env:
       RENDER_PUBLISH_URL: ${{ secrets.RENDER_PUBLISH_URL }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
@@ -21,7 +26,20 @@ jobs:
 
       - name: Call scheduled publish endpoint
         run: |
-          curl --fail --silent --show-error "$RENDER_PUBLISH_URL"
+          RESPONSE="$(curl --fail --silent --show-error "$RENDER_PUBLISH_URL")"
+          echo "$RESPONSE"
+
+          SUCCESS="$(echo "$RESPONSE" | jq -r '.success // false')"
+          if [ "$SUCCESS" != "true" ]; then
+            echo "publish-scheduled returned success=false"
+            exit 1
+          fi
+
+          FAILED="$(echo "$RESPONSE" | jq -r '.data.failed // 0')"
+          INVALID="$(echo "$RESPONSE" | jq -r '.data.invalidScheduledAtCount // 0')"
+          if [ "$FAILED" -gt 0 ] || [ "$INVALID" -gt 0 ]; then
+            echo "Anomaly detected: failed=$FAILED invalidScheduledAtCount=$INVALID"
+          fi
 
       - name: Notify Slack on failure
         if: failure() && env.SLACK_WEBHOOK_URL != ''
