@@ -8,15 +8,28 @@ on:
 jobs:
   publish:
     runs-on: ubuntu-latest
+    env:
+      RENDER_PUBLISH_URL: ${{ secrets.RENDER_PUBLISH_URL }}
+      SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Validate secret
         run: |
-          if [ -z "${{ secrets.RENDER_PUBLISH_URL }}" ]; then
+          if [ -z "$RENDER_PUBLISH_URL" ]; then
             echo "RENDER_PUBLISH_URL is not set"
             exit 1
           fi
 
       - name: Call scheduled publish endpoint
         run: |
-          curl --fail --silent --show-error "${{ secrets.RENDER_PUBLISH_URL }}"
+          curl --fail --silent --show-error "$RENDER_PUBLISH_URL"
 
+      - name: Notify Slack on failure
+        if: failure() && env.SLACK_WEBHOOK_URL != ''
+        run: |
+          RUN_URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          TEXT="Publish Scheduled Posts failed on ${{ github.repository }} (branch: ${{ github.ref_name }}). Run: $RUN_URL"
+          curl --fail --silent --show-error \
+            -X POST \
+            -H "Content-Type: application/json" \
+            --data "{\"text\":\"$TEXT\"}" \
+            "$SLACK_WEBHOOK_URL"

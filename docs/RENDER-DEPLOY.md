@@ -64,9 +64,13 @@ Render free plan does not support Jobs/Cron. Use GitHub Actions scheduler instea
 
 1. Add repository secret:
    - `RENDER_PUBLISH_URL=https://<your-render-domain>/api/jobs/publish-scheduled?key=<CRON_PUBLISH_SECRET>`
+   - Optional: `SLACK_WEBHOOK_URL=<your-slack-incoming-webhook-url>`
 2. Commit workflow:
    - `.github/workflows/publish-scheduled.yml`
 3. Scheduler runs every 15 minutes (`*/15 * * * *`).
+4. Notification:
+   - If `SLACK_WEBHOOK_URL` is set, workflow failure sends Slack alert.
+   - GitHub email notifications can also be enabled from user notification settings.
 
 ## Important limitations in mock mode
 
