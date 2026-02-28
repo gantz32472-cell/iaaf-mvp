@@ -39,6 +39,35 @@ Recommended initial values:
 - Open `/api/health` and confirm `200`
 - Open `/` dashboard page
 
+## 5. Auto publish with Render Cron
+
+Use a Render Cron Job to call scheduled publish endpoint regularly.
+
+1. Set web service env:
+   - `CRON_PUBLISH_SECRET=<long-random-string>`
+2. In Render, create `Cron Job`
+   - Schedule example: `*/15 * * * *` (every 15 minutes)
+   - Command:
+
+```bash
+curl -fsS "https://<your-render-domain>/api/jobs/publish-scheduled?key=$CRON_PUBLISH_SECRET"
+```
+
+Notes:
+- Endpoint checks `CRON_PUBLISH_SECRET` when set.
+- If key is wrong, API returns `401`.
+- Keep the value secret; rotate if leaked.
+
+### If you are on Render free plan
+
+Render free plan does not support Jobs/Cron. Use GitHub Actions scheduler instead.
+
+1. Add repository secret:
+   - `RENDER_PUBLISH_URL=https://<your-render-domain>/api/jobs/publish-scheduled?key=<CRON_PUBLISH_SECRET>`
+2. Commit workflow:
+   - `.github/workflows/publish-scheduled.yml`
+3. Scheduler runs every 15 minutes (`*/15 * * * *`).
+
 ## Important limitations in mock mode
 
 - Data is stored in local files (`data/mock-db.json`), so it may reset on redeploy/restart
