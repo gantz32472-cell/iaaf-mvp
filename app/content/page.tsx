@@ -18,9 +18,9 @@ export default async function ContentPage() {
             endpoint="/api/content/generate"
             initialJson={JSON.stringify(
               {
-                category: "internet",
-                targetPersona: "一人暮らしで固定費を下げたい人",
-                angles: ["料金", "工事有無", "速度安定性"],
+                category: "blog",
+                targetPersona: "副業でブログ収益を伸ばしたい人",
+                angles: ["記事構成", "SEO", "収益導線"],
                 offerIds: [firstOfferId],
                 format: "carousel",
                 objective: "dm"
@@ -38,11 +38,11 @@ export default async function ContentPage() {
               endpoint="/api/content/ng-check"
               initialJson={JSON.stringify(
                 {
-                  text: "このWi-Fiは絶対おすすめ！100%満足！",
+                  text: "このテンプレなら誰でも月10万円達成できます！",
                   offerIds: [firstOfferId],
                   prNotationText: "",
-                  hookText: "絶対おすすめ",
-                  captionText: "100%満足"
+                  hookText: "誰でも達成",
+                  captionText: "必ず収益化できる"
                 },
                 null,
                 2
@@ -57,8 +57,8 @@ export default async function ContentPage() {
               initialJson={JSON.stringify(
                 {
                   pages: [
-                    { title: "回線比較の結論", body: "料金だけでなく工事有無と速度を確認" },
-                    { title: "CTA", body: "DMで『比較』と送ると一覧リンクを返します" }
+                    { title: "ブログ改善の結論", body: "検索意図に沿った構成と導線を先に決める" },
+                    { title: "CTA", body: "DMで『添削』と送ると改善チェックリストを返します" }
                   ]
                 },
                 null,
