@@ -8,7 +8,8 @@ const items: Array<{ href: Route; label: string }> = [
   { href: "/content", label: "Content" },
   { href: "/posts", label: "Posts" },
   { href: "/dm-rules", label: "DM Rules" },
-  { href: "/analytics", label: "Analytics" }
+  { href: "/analytics", label: "Analytics" },
+  { href: "/ops", label: "Ops" }
 ];
 
 export function Nav() {

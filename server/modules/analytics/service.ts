@@ -5,6 +5,19 @@ import { nowIso, todayDateString } from "@/lib/utils/date";
 import { ConversionReport } from "@/types/models";
 
 type RangeInput = { from?: string; to?: string; period?: "day" | "week" | "month" };
+type ErrorSeverity = "error" | "warn";
+
+export type OperationalErrorRow = {
+  id: string;
+  severity: ErrorSeverity;
+  source: "post_publish" | "post_schedule";
+  postId: string;
+  format: string;
+  status: string;
+  hookText: string;
+  message: string;
+  occurredAt: string;
+};
 
 function getRange(range?: RangeInput) {
   const now = new Date();
@@ -49,6 +62,49 @@ export async function getAnalyticsSummary(rangeInput?: RangeInput) {
     .sort((a, b) => b.clicks + b.dms - (a.clicks + a.dms))
     .slice(0, 5);
   return { todayPosts, todayDms, todayClicks, estimatedCv, errorCount, ranking };
+}
+
+export async function getOperationalErrors(input?: { limit?: number }) {
+  const db = await getDb();
+  const limit = Math.max(1, Math.min(input?.limit ?? 50, 200));
+
+  const rows: OperationalErrorRow[] = [];
+
+  for (const post of db.generatedPosts) {
+    if (post.status === "failed" && post.errorMessage) {
+      rows.push({
+        id: `post_failed_${post.id}`,
+        severity: "error",
+        source: "post_publish",
+        postId: post.id,
+        format: post.format,
+        status: post.status,
+        hookText: post.hookText,
+        message: post.errorMessage,
+        occurredAt: post.updatedAt
+      });
+    }
+
+    if (post.status === "scheduled" && post.scheduledAt && Number.isNaN(new Date(post.scheduledAt).getTime())) {
+      rows.push({
+        id: `post_schedule_invalid_${post.id}`,
+        severity: "warn",
+        source: "post_schedule",
+        postId: post.id,
+        format: post.format,
+        status: post.status,
+        hookText: post.hookText,
+        message: `Invalid scheduledAt: ${post.scheduledAt}`,
+        occurredAt: post.updatedAt
+      });
+    }
+  }
+
+  rows.sort((a, b) => new Date(b.occurredAt).getTime() - new Date(a.occurredAt).getTime());
+  return {
+    total: rows.length,
+    rows: rows.slice(0, limit)
+  };
 }
 
 export async function getAnalyticsByPosts(rangeInput?: RangeInput) {

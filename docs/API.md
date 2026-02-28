@@ -111,6 +111,10 @@
 ### `GET /api/analytics/summary`
 - `todayPosts, todayDms, todayClicks, estimatedCv, errorCount, ranking[]`
 
+### `GET /api/analytics/errors?limit=100`
+- 運用エラー一覧（投稿失敗、不正scheduledAt）
+- response: `total, rows[]`
+
 ### `GET /api/analytics/posts`
 - 投稿別 DM/クリック集計
 

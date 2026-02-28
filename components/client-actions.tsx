@@ -5,7 +5,7 @@ import { useState, startTransition } from "react";
 export function JsonFormAction(props: {
   title: string;
   endpoint: string;
-  method?: "POST" | "PATCH";
+  method?: "GET" | "POST" | "PATCH";
   initialJson: string;
   buttonLabel?: string;
 }) {
@@ -16,10 +16,11 @@ export function JsonFormAction(props: {
   async function submit() {
     setLoading(true);
     try {
+      const method = props.method ?? "POST";
       const res = await fetch(props.endpoint, {
-        method: props.method ?? "POST",
+        method,
         headers: { "Content-Type": "application/json" },
-        body: payload
+        body: method === "GET" ? undefined : payload
       });
       const json = await res.json();
       startTransition(() => setResult(JSON.stringify(json, null, 2)));

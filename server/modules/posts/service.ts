@@ -1,16 +1,23 @@
 import { getDb, saveDb } from "@/lib/store/repository";
 import { nowIso } from "@/lib/utils/date";
 import { instagramPublisher } from "@/server/modules/posts/publisher";
+import { logger } from "@/server/services/logger";
 
 export async function listPosts() {
   return (await getDb()).generatedPosts;
 }
 
 export async function schedulePost(generatedPostId: string, scheduledAt: string) {
+  const scheduledTime = new Date(scheduledAt).getTime();
+  if (Number.isNaN(scheduledTime)) {
+    throw new Error("Invalid scheduledAt");
+  }
+
   let updated;
   await saveDb((db) => {
     const idx = db.generatedPosts.findIndex((p) => p.id === generatedPostId);
     if (idx < 0) throw new Error("Post not found");
+    if (db.generatedPosts[idx].status === "posted") throw new Error("Cannot schedule an already posted item");
     updated = { ...db.generatedPosts[idx], status: "scheduled" as const, scheduledAt, updatedAt: nowIso() };
     db.generatedPosts[idx] = updated!;
   });
@@ -21,6 +28,13 @@ export async function publishPostNow(postId: string) {
   const db = await getDb();
   const post = db.generatedPosts.find((p) => p.id === postId);
   if (!post) throw new Error("Post not found");
+
+  // Make publish-now idempotent for operational safety.
+  if (post.status === "posted") {
+    logger.info("publishPostNow skipped: already posted", { postId, instagramMediaId: post.instagramMediaId ?? null });
+    return post;
+  }
+
   try {
     const result =
       post.format === "reel"
@@ -43,6 +57,7 @@ export async function publishPostNow(postId: string) {
       };
       state.generatedPosts[idx] = updated!;
     });
+    logger.info("publishPostNow success", { postId, mediaId: result.mediaId, format: post.format });
     return updated!;
   } catch (error) {
     const message = error instanceof Error ? error.message : "publish failed";
@@ -58,6 +73,7 @@ export async function publishPostNow(postId: string) {
       };
       state.generatedPosts[idx] = failed!;
     });
+    logger.error("publishPostNow failed", { postId, message });
     throw error;
   }
 }
@@ -95,9 +111,19 @@ export async function duplicatePost(postId: string) {
 export async function publishScheduledPosts() {
   const db = await getDb();
   const now = Date.now();
+  let invalidScheduledAtCount = 0;
   const targets = db.generatedPosts.filter(
-    (p) => p.status === "scheduled" && p.scheduledAt && new Date(p.scheduledAt).getTime() <= now
+    (p) => {
+      if (p.status !== "scheduled" || !p.scheduledAt) return false;
+      const ts = new Date(p.scheduledAt).getTime();
+      if (Number.isNaN(ts)) {
+        invalidScheduledAtCount += 1;
+        return false;
+      }
+      return ts <= now;
+    }
   );
+  targets.sort((a, b) => new Date(a.scheduledAt!).getTime() - new Date(b.scheduledAt!).getTime());
 
   const results: Array<{ postId: string; ok: boolean; mediaId?: string; error?: string }> = [];
   for (const post of targets) {
@@ -109,11 +135,14 @@ export async function publishScheduledPosts() {
     }
   }
 
-  return {
+  const summary = {
     scanned: db.generatedPosts.length,
     due: targets.length,
     published: results.filter((r) => r.ok).length,
     failed: results.filter((r) => !r.ok).length,
+    invalidScheduledAtCount,
     results
   };
+  logger.info("publishScheduledPosts summary", summary);
+  return summary;
 }
