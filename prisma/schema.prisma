@@ -10,6 +10,7 @@ datasource db {
 enum OfferCategory {
   internet
   server
+  blog
   other
 }
 

@@ -9,9 +9,9 @@ export default async function OffersPage() {
   const offers = await listOffers();
 
   return (
-    <PageShell title="案件マスタ">
+    <PageShell title="Offers">
       <div className="grid gap-4 xl:grid-cols-[1.4fr_1fr]">
-        <Card title="案件一覧 / 一時停止">
+        <Card title="Offer List">
           <table>
             <thead>
               <tr>
@@ -37,19 +37,19 @@ export default async function OffersPage() {
         </Card>
 
         <div className="space-y-4">
-          <Card title="新規作成">
+          <Card title="Create Offer">
             <JsonFormAction
               title="POST /api/offers"
               endpoint="/api/offers"
               initialJson={JSON.stringify(
                 {
-                  name: "新規Wi-Fi比較案件",
-                  category: "internet",
+                  name: "ブログ運用案件",
+                  category: "blog",
                   aspName: "A8",
-                  destinationUrl: "https://example.com/wifi",
-                  referenceUrl: "https://example.com/wifi-ref",
-                  targetPersona: "料金を見直したい人",
-                  angles: ["料金", "速度", "比較"],
+                  destinationUrl: "https://example.com/blog",
+                  referenceUrl: "https://example.com/blog-ref",
+                  targetPersona: "副業ブロガー",
+                  angles: ["SEO", "記事構成", "収益化"],
                   prLabelRequired: true,
                   ngWords: ["No.1", "絶対"],
                   status: "active"
@@ -60,7 +60,7 @@ export default async function OffersPage() {
             />
           </Card>
 
-          <Card title="CSV取込">
+          <Card title="CSV Import">
             <JsonFormAction
               title="POST /api/offers/import-csv"
               endpoint="/api/offers/import-csv"
@@ -68,7 +68,7 @@ export default async function OffersPage() {
                 {
                   csvText:
                     "name,category,aspName,destinationUrl,referenceUrl,targetPersona,angles,prLabelRequired,ngWords,status\n" +
-                    "サンプル光回線,internet,A8,https://example.com/hikari,,在宅ワーカー,料金|速度|比較,true,No.1|絶対,active"
+                    "ブログ運用案件,blog,A8,https://example.com/blog,,副業ブロガー,SEO|記事構成|収益化,true,No.1|絶対,active"
                 },
                 null,
                 2
@@ -80,3 +80,4 @@ export default async function OffersPage() {
     </PageShell>
   );
 }
+

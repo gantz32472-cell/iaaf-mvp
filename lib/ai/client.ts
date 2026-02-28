@@ -29,11 +29,13 @@ function pickCtaKeyword(input: GenerateInput) {
   if (input.objective === "dm") {
     if (input.category === "internet") return "比較";
     if (input.category === "server") return "診断";
+    if (input.category === "blog") return "相談";
     return "相談";
   }
 
   if (input.category === "internet") return "詳細";
   if (input.category === "server") return "導入";
+  if (input.category === "blog") return "記事";
   return "確認";
 }
 
@@ -42,6 +44,7 @@ function buildHashtags(input: GenerateInput) {
   const categoryTags: Record<string, string[]> = {
     internet: ["回線比較", "WiFi", "固定費見直し"],
     server: ["サーバー", "クラウド", "運用改善"],
+    blog: ["ブログ運営", "SEO", "記事作成"],
     other: ["比較検討", "サービス選び"]
   };
 
@@ -125,4 +128,3 @@ export async function generateDmReplies(input: { keyword: string; targetUrl: str
   }
   throw new Error("OpenAI DM reply integration not implemented in this MVP build");
 }
-

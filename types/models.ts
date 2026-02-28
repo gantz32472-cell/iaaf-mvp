@@ -1,4 +1,4 @@
-export type OfferCategory = "internet" | "server" | "other";
+export type OfferCategory = "internet" | "server" | "blog" | "other";
 export type OfferStatus = "active" | "paused" | "ended";
 export type PostFormat = "carousel" | "reel";
 export type GeneratedPostStatus = "draft" | "scheduled" | "posted" | "failed";

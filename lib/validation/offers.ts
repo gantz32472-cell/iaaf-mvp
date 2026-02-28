@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const offerCategorySchema = z.enum(["internet", "server", "other"]);
+export const offerCategorySchema = z.enum(["internet", "server", "blog", "other"]);
 export const offerStatusSchema = z.enum(["active", "paused", "ended"]);
 
 export const offerInputSchema = z.object({
