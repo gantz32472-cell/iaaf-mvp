@@ -65,9 +65,12 @@ Meta App operation guide:
 - Set env on web service:
   - `CRON_PUBLISH_SECRET=<long-random-string>`
   - optional: `OPS_ALERT_WEBHOOK_URL=<webhook-url>`
+  - `AUTO_POST_SLOTS_JST=09:00,21:00`
+  - `AUTO_POST_OBJECTIVE=dm`
 - Create Render Cron Job:
   - schedule (recommended): `*/15 * * * *`
   - command:
+    - `curl -fsS "https://<domain>/api/jobs/auto-generate-schedule?key=$CRON_PUBLISH_SECRET"`
     - `curl -fsS "https://<domain>/api/jobs/publish-scheduled?key=$CRON_PUBLISH_SECRET"`
 - Validate once manually:
   - open `https://<domain>/api/jobs/publish-scheduled?key=<CRON_PUBLISH_SECRET>`
@@ -77,6 +80,7 @@ Meta App operation guide:
 - workflow:
   - `.github/workflows/publish-scheduled.yml`
 - GitHub Secrets:
+  - `RENDER_AUTO_SCHEDULE_URL=https://<domain>/api/jobs/auto-generate-schedule?key=<CRON_PUBLISH_SECRET>`
   - `RENDER_PUBLISH_URL=https://<domain>/api/jobs/publish-scheduled?key=<CRON_PUBLISH_SECRET>`
   - optional: `SLACK_WEBHOOK_URL=<slack-webhook-url>`
 - schedule:

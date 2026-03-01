@@ -15,6 +15,7 @@ out/
 dev-server.out.log
 dev-server.err.log
 data/mock-db.test-*.json
+public/generated/
 
 # OS/editor
 .DS_Store

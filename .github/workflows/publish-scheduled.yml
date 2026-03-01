@@ -14,13 +14,29 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     env:
+      RENDER_AUTO_SCHEDULE_URL: ${{ secrets.RENDER_AUTO_SCHEDULE_URL }}
       RENDER_PUBLISH_URL: ${{ secrets.RENDER_PUBLISH_URL }}
       SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
     steps:
       - name: Validate secret
         run: |
+          if [ -z "$RENDER_AUTO_SCHEDULE_URL" ]; then
+            echo "RENDER_AUTO_SCHEDULE_URL is not set"
+            exit 1
+          fi
           if [ -z "$RENDER_PUBLISH_URL" ]; then
             echo "RENDER_PUBLISH_URL is not set"
+            exit 1
+          fi
+
+      - name: Call auto-generate-schedule endpoint
+        run: |
+          RESPONSE="$(curl --fail --silent --show-error "$RENDER_AUTO_SCHEDULE_URL")"
+          echo "$RESPONSE"
+
+          SUCCESS="$(echo "$RESPONSE" | jq -r '.success // false')"
+          if [ "$SUCCESS" != "true" ]; then
+            echo "auto-generate-schedule returned success=false"
             exit 1
           fi
 

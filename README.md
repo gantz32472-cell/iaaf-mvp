@@ -116,8 +116,11 @@ npm test
 1. 本番環境に設定
 - `CRON_PUBLISH_SECRET=<long-random-string>`
 - （任意）`OPS_ALERT_WEBHOOK_URL=<Slack/Discord等のWebhook URL>`
+- `AUTO_POST_SLOTS_JST=09:00,21:00`
+- `AUTO_POST_OBJECTIVE=dm`
 
 2. GitHub Secrets に設定
+- `RENDER_AUTO_SCHEDULE_URL=https://<your-domain>/api/jobs/auto-generate-schedule?key=<CRON_PUBLISH_SECRET>`
 - `RENDER_PUBLISH_URL=https://<your-domain>/api/jobs/publish-scheduled?key=<CRON_PUBLISH_SECRET>`
 - （任意）`SLACK_WEBHOOK_URL=<your-slack-webhook-url>`
 
@@ -129,6 +132,7 @@ npm test
 4. 成功条件
 - レスポンスJSONの `success=true`
 - 失敗時は workflow が `failed` になり、`SLACK_WEBHOOK_URL` 設定時は通知送信
+- 実行ごとに「自動生成・予約」→「予約投稿実行」が順に呼ばれる
 
 実装済み:
 - DM rule キーワードマッチ

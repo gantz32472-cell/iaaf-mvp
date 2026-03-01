@@ -130,6 +130,12 @@
 
 ## Jobs (v1-alpha)
 
+### `POST /api/jobs/auto-generate-schedule`
+- 次の投稿スロット（JST）に向けて `draft` 自動生成 + `scheduled` 自動登録
+- `CRON_PUBLISH_SECRET` が設定されている場合は `?key=` か `x-cron-key` が必須
+- スロット: `AUTO_POST_SLOTS_JST`（例 `09:00,21:00`）
+- 目的: `AUTO_POST_OBJECTIVE`（`dm` / `click`）
+
 ### `POST /api/jobs/publish-scheduled`
 - `scheduledAt <= now` の投稿を一括実行
 - cron / n8n からの定期実行を想定

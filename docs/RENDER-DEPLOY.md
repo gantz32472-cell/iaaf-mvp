@@ -46,11 +46,14 @@ Use a Render Cron Job to call scheduled publish endpoint regularly.
 1. Set web service env:
    - `CRON_PUBLISH_SECRET=<long-random-string>`
    - optional: `OPS_ALERT_WEBHOOK_URL=<webhook-url>`
+   - `AUTO_POST_SLOTS_JST=09:00,21:00`
+   - `AUTO_POST_OBJECTIVE=dm`
 2. In Render, create `Cron Job`
    - Schedule example: `*/15 * * * *` (every 15 minutes)
    - Command:
 
 ```bash
+curl -fsS "https://<your-render-domain>/api/jobs/auto-generate-schedule?key=$CRON_PUBLISH_SECRET"
 curl -fsS "https://<your-render-domain>/api/jobs/publish-scheduled?key=$CRON_PUBLISH_SECRET"
 ```
 
@@ -64,6 +67,7 @@ Notes:
 Render free plan does not support Jobs/Cron. Use GitHub Actions scheduler instead.
 
 1. Add repository secret:
+   - `RENDER_AUTO_SCHEDULE_URL=https://<your-render-domain>/api/jobs/auto-generate-schedule?key=<CRON_PUBLISH_SECRET>`
    - `RENDER_PUBLISH_URL=https://<your-render-domain>/api/jobs/publish-scheduled?key=<CRON_PUBLISH_SECRET>`
    - Optional: `SLACK_WEBHOOK_URL=<your-slack-incoming-webhook-url>`
 2. Commit workflow:
