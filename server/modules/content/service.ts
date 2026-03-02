@@ -5,6 +5,7 @@ import { nowIso } from "@/lib/utils/date";
 import { getDb, saveDb } from "@/lib/store/repository";
 import { generatePostContent } from "@/lib/ai/client";
 import { GeneratedPost } from "@/types/models";
+import sharp from "sharp";
 
 export async function generateContentDraft(input: {
   category: string;
@@ -50,7 +51,7 @@ export async function saveGeneratedPostDraft(input: {
 export async function renderCarouselSvg(pages: Array<{ title: string; body: string }>) {
   const width = 1080;
   const height = 1080;
-  const filename = `${createId()}.svg`;
+  const filename = `${createId()}.png`;
   const outDir = path.join(process.cwd(), "public", "generated", "carousels");
   await fs.mkdir(outDir, { recursive: true });
   const first = pages[0];
@@ -68,7 +69,8 @@ export async function renderCarouselSvg(pages: Array<{ title: string; body: stri
   <text x="110" y="340" font-size="42" font-family="sans-serif" fill="#1f574d">${escapeXml(first.body)}</text>
   <text x="110" y="${height - 140}" font-size="28" font-family="sans-serif" fill="#2f7c6d">IAAF MVP carousel mock (${pages.length}p)</text>
 </svg>`;
-  await fs.writeFile(path.join(outDir, filename), svg, "utf8");
+  const png = await sharp(Buffer.from(svg)).png({ quality: 92 }).toBuffer();
+  await fs.writeFile(path.join(outDir, filename), png);
   return `/generated/carousels/${filename}`;
 }
 
